@@ -380,6 +380,8 @@ Elements of the GenSync project code have been worked on, at various points, by:
 <a name="Installation/Compilation"></a>
 ### Installation/Compilation:
 
+* _Troubleshooting_
+    * For issues with installation, refer to the default [README](https://github.com/nislab/gensync-core/blob/master/README.md)
 * _Dependencies:_
     * [NTL](http://www.shoup.net/ntl/) - A library for doing Number Theory (>9.5)
         - ptheads - may be required depending on how NTL is configured
