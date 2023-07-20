@@ -1,16 +1,11 @@
 # GenSync-lib-linux
 
-GenSync-lib-linux provides a [library](https://github.com/nislab/gensync/tree/vanilla) for synchronizing data _efficiently_ across different machines on MACOS.  The library
+GenSync-lib-linux is the extended version for Linux. It provides a library for synchronizing data _efficiently_ across different machines on Linux.  The library
 includes implmenetations of several state-of-the-art protocols that optimize different metrics, including:
 * ___Communication___ - total number of bytes transmitted
 * ___Rounds___ - the amount of back-and-forth needed to compelte synchronization
 * ___Computation___ - computing resources required
 * ___Memory___ - amount of physical memory needed
-
-Extensions of this work can be found at the [GenSync project](https://github.com/nislab/gensync) at [Boston University NISLAB](http://nislab.bu.edu), including:
-* Benchmarking and testing infrastructure
-* Logging capabilities
-* Debugging and development options
 
 The current version is 2.0.4
 
@@ -29,7 +24,7 @@ The current version is 2.0.4
 <a name="Examples"></a>
 ## Examples
 
-Here is a simple example of GenSync in action.  It can be compiled as follows, with `/opt/local` replaced by your MacPorts directory:
+Here is a simple example of GenSync in action.
 
 ### TryMe.cpp
 This program launches two processes, connected by a network socket:
@@ -39,7 +34,7 @@ This program launches two processes, connected by a network socket:
 #### Compilation
 The program can be compiled with
 ```shell
-$ g++ -I/opt/local/include -L/opt/local/lib -std=c++11 TryMe.cpp -lgensync -lntl -o tryme
+$ g++ -I/usr/local/include -L/usr/local/lib -std=c++11 TryMe.cpp -lgensync -lntl -o tryme
 $ ./tryme
 ```
 
@@ -181,7 +176,7 @@ int main(int argc, char *argv[]) {
 ```
 To compile use:
 ```shell
-$ g++ -I/opt/local/include -L/opt/local/lib -std=c++11 tryme2.cpp -lgensync -lntl -o tryme2
+$ g++ -I/usr/local/include -L/usr/local/lib -std=c++11 tryme2.cpp -lgensync -lntl -o tryme2
 ```
 
 To run, open two terminals.  In one issue the command:
@@ -385,9 +380,6 @@ Elements of the GenSync project code have been worked on, at various points, by:
 <a name="Installation/Compilation"></a>
 ### Installation/Compilation:
 
-* Macports installs the Gensync library in `[MACPORTS dir]/lib`, and the header files in `[MACPORTS dir]/include`.
-* _Troubleshooting_
-    * For issues with macports installation, refer to the default [README](https://github.com/nislab/gensync/blob/master/README.md#usage_compilation)
 * _Dependencies:_
     * [NTL](http://www.shoup.net/ntl/) - A library for doing Number Theory (>9.5)
         - ptheads - may be required depending on how NTL is configured
@@ -396,8 +388,8 @@ Elements of the GenSync project code have been worked on, at various points, by:
     * [cmake](https://cmake.org) - For building
 * _Source-based Compilation:_
 ```
-$ git clone --recurse-submodules git@github.com:nislab/gensync.git
-$ cd gensync
+$ git clone --recurse-submodules git@github.com:nislab/gensync-lib-linux.git
+$ cd gensync-lib-linux
 $ cmake -B build
 $ cmake --build build
 ```
