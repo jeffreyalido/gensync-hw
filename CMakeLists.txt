@@ -63,9 +63,9 @@ set(SOURCE_FILES
         ${SYNC_DIR}/CuckooSync.cpp
         ${SYNC_DIR}/FullSync.cpp
 
-        ${BENCH_DIR}/Runner.cpp
-        ${BENCH_DIR}/BenchParams.cpp
-        ${BENCH_DIR}/FromFileGen.cpp
+#        ${BENCH_DIR}/Runner.cpp
+#        ${BENCH_DIR}/BenchParams.cpp
+#        ${BENCH_DIR}/FromFileGen.cpp
 
         ${TOOLS_DIR}/EncodeJoin.cpp
 
@@ -114,11 +114,11 @@ set(HEADERS
         ${SYNC_DIR_INC}/PrioCPISync.h
         ${SYNC_DIR_INC}/ProbCPISync.h
 
-        ${SYNC_BENCH_INC}/BenchObserv.h
-        ${SYNC_BENCH_INC}/BenchParams.h
-        ${SYNC_BENCH_INC}/DataObjectGenerator.h
-        ${SYNC_BENCH_INC}/RandGen.h
-        ${SYNC_BENCH_INC}/FromFileGen.h)
+#        ${SYNC_BENCH_INC}/BenchObserv.h
+#        ${SYNC_BENCH_INC}/BenchParams.h
+#        ${SYNC_BENCH_INC}/DataObjectGenerator.h
+#        ${SYNC_BENCH_INC}/RandGen.h
+#        ${SYNC_BENCH_INC}/FromFileGen.h)
 
 include_directories(gensync-core/include)
 
