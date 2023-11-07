@@ -90,34 +90,32 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
         mySyncStats.timerEnd(SyncStats::IDLE_TIME);
 
         mySyncStats.timerStart(SyncStats::COMM_TIME);
-        // first, receive how many DataObjects have been sent...
-        const long SIZE = commSync->commRecv_long();
 
-        // then receive each DataObject and store to a multiset
-        multiset<shared_ptr<DataObject>, cmp<shared_ptr<DataObject>>> other;
-        for (int ii = 0; ii < SIZE; ii++) {
-            other.insert(commSync->commRecv_DataObject());
+        // boolean to track when to quit, ie, n dataobjects in a row
+        int n = 2;
+        bool quitSync = false; 
+        int nCounter = 0;
+
+        while (!quitSync) {
+            const long SIZE = commSync->commRecv_long();
+            if (SIZE == 1) {
+                shared_ptr<DataObject> newDatum = commSync->commRecv_DataObject();
+                if (myData.find(newDatum) != myData.end()) {
+                    nCounter++;
+                    if (nCounter == n) {
+                        quitSync = true;
+                    }
+                }
+                else {
+                    myData.insert(newDatum);
+                }
+            }
         }
-        mySyncStats.timerEnd(SyncStats::COMM_TIME);
 
-        mySyncStats.timerStart(SyncStats::COMP_TIME);
-        // Calculate differences between two lists and splice onto respective
-        // lists
-        rangeDiff(myData.begin(), myData.end(), other.begin(), other.end(),
-                  back_inserter(selfMinusOther));
-        rangeDiff(other.begin(), other.end(), myData.begin(), myData.end(),
-                  back_inserter(otherMinusSelf));
-        mySyncStats.timerEnd(SyncStats::COMP_TIME);
-
-        mySyncStats.timerStart(SyncStats::COMM_TIME);
-        // send back differences. our otherMinusSelf is their selfMinusOther and
-        // v.v.
-        commSync->commSend(otherMinusSelf);
-        commSync->commSend(selfMinusOther);
-        mySyncStats.timerEnd(SyncStats::COMM_TIME);
+    
 
         stringstream msg;
-        msg << "FullSync succeeded." << endl;
+        msg << "StupidSync succeeded." << endl;
         msg << "self - other = " << printListOfSharedPtrs(selfMinusOther)
             << endl;
         msg << "other - self = " << printListOfSharedPtrs(otherMinusSelf)
