@@ -203,3 +203,8 @@ fabric.properties
 *.mnlog
 /scripts/network_cpu_variations/DATA/
 /scripts/network_cpu_variations/.mypy_cache/
+
+gmp*
+.gensync/
+.vscode/
+gensync-core/include/NTL/
