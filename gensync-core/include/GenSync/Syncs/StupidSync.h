@@ -20,18 +20,12 @@
 #include <GenSync/Aux/Auxiliary.h>
 #include <GenSync/Aux/Exceptions.h>
 #include <GenSync/Aux/SyncMethod.h>
-// #include <NTL/RR.h>
-// #include <NTL/ZZ_pX.h>
-// #include <NTL/ZZ_pXFactoring.h>
-// #include <NTL/vec_ZZ_p.h>
-// #include <algorithm>
-// NTL::ZZ_pXMultiplier
-// namespaces
 
 class StupidSync : public SyncMethod {
   public:
     // General class constructor
-    StupidSync();
+    StupidSync(int nInARow);
+    // StupidSync();
 
     // General class destructor
     ~StupidSync() override;
@@ -49,12 +43,13 @@ class StupidSync : public SyncMethod {
     inline string getName() override { return "Stupid Sync"; }
 
     /**
-     * @return A string representing the elements stored in the FullSync object.
+     * @return A string representing the elements stored in the StupidSync object.
      */
     string printElem();
 
   private:
     multiset<shared_ptr<DataObject>, cmp<shared_ptr<DataObject>>> myData;
+    int nInARow;
 };
 
-#endif /* FULLSYNC_H */
+#endif /* STUPIDSYNC_H */

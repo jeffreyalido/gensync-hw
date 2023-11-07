@@ -41,6 +41,12 @@ struct FullSyncParams : Params {
     void apply(GenSync::Builder& gsb) const {};
 };
 
+struct StupidSyncParams : Params {
+    ostream& serialize(ostream& os) const {os << "StupidSync\n"; return os;};
+    istream& unserialize(istream& is) {string line; getline(is, line); return is;};
+    void apply(GenSync::Builder& gsb) const {};
+};
+
 struct CPISyncParams : Params {
     size_t m_bar;
     size_t bits;

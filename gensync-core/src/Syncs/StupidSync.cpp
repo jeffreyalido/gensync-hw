@@ -16,7 +16,11 @@
 
 #include <GenSync/Syncs/StupidSync.h>
 
-StupidSync::StupidSync() = default;
+StupidSync::StupidSync(int the_NInARow) {
+    // SyncID = SYNC_TYPE::GenericSync; // synchronization type
+    nInARow = the_NInARow;
+}
+// StupidSync::StupidSync() = default;
 
 StupidSync::~StupidSync() = default;
 
@@ -41,37 +45,32 @@ bool StupidSync::SyncClient(const shared_ptr<Communicant> &commSync,
         // call parent method for bookkeeping
         SyncMethod::SyncClient(commSync, selfMinusOther, otherMinusSelf);
         mySyncStats.timerStart(SyncStats::IDLE_TIME);
+
         // connect to the other party
         commSync->commConnect();
         mySyncStats.timerEnd(SyncStats::IDLE_TIME);
 
-    
+        mySyncStats.timerStart(SyncStats::COMM_TIME);
         auto iter = SyncMethod::beginElements(); // Initialize the iterator
         int response; // flag to track when to quit, ie, n dataobjects in a row
-
-        while (iter != SyncMethod::endElements()) { // Use a while loop
-            commSync->commSend(1); // send one element at a time
+        while (iter != SyncMethod::endElements()) { 
             commSync->commSend(**iter);
             response = commSync->commRecv_byte();
             if (response == SYNC_OK_FLAG) {
+                cout << "client break" << endl;
                 break;
             }
             ++iter;
+            std::cout << "client iter: " << **iter << std::endl;
         }
 
-        stringstream msg;
-        msg << "StupidSync succeeded." << endl;
-        msg << "self - other = " << printListOfSharedPtrs(selfMinusOther)
-            << endl;
-        msg << "other - self = " << printListOfSharedPtrs(otherMinusSelf)
-            << endl;
-        Logger::gLog(Logger::METHOD, msg.str());
+        // mySyncStats.timerEnd(SyncStats::COMM_TIME);
 
         commSync->commClose();
 
         // Record Stats
-        mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());
-        mySyncStats.increment(SyncStats::RECV, commSync->getRecvBytes());
+        // mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());
+        // mySyncStats.increment(SyncStats::RECV, commSync->getRecvBytes());
 
         return true;
     } catch (SyncFailureException &s) {
@@ -84,7 +83,7 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
                           list<shared_ptr<DataObject>> &selfMinusOther,
                           list<shared_ptr<DataObject>> &otherMinusSelf) {
     try {
-        Logger::gLog(Logger::METHOD, "Entering FullSync::SyncServer");
+        Logger::gLog(Logger::METHOD, "Entering StupidSync::SyncServer");
 
         // call parent method for bookkeeping
         SyncMethod::SyncServer(commSync, selfMinusOther, otherMinusSelf);
@@ -96,45 +95,35 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
 
         mySyncStats.timerStart(SyncStats::COMM_TIME);
 
-        // boolean to track when to quit, ie, n dataobjects in a row
-        int n = 2;
         bool quitSync = false; 
         int nCounter = 0;
 
         while (!quitSync) {
-            const long SIZE = commSync->commRecv_long();
-            if (SIZE == 1) {
-                shared_ptr<DataObject> newDatum = commSync->commRecv_DataObject();
-                if (myData.find(newDatum) != myData.end()) {
-                    nCounter++;
-                    if (nCounter == n) {
-                        quitSync = true;
-                        commSync->commSend(SYNC_OK_FLAG);
-                    }
+            shared_ptr<DataObject> newDatum = commSync->commRecv_DataObject();
+            std::cout << "server newDatum: " << *newDatum << std::endl;
+            if (myData.find(newDatum) != myData.end()) {
+                cout << "found" << endl;
+                nCounter++;
+                cout << "nCounter: " << nCounter << endl;
+                if (nCounter == nInARow) {
+                    quitSync = true;
+                    commSync->commSend(SYNC_OK_FLAG);
+                    cout << "server break" << endl;
+                    break;
                 }
-                else {
-                    myData.insert(newDatum);
-                }
-                commSync->commSend(SYNC_NO_INFO);
             }
+            else {
+                myData.insert(newDatum);
+            }
+            commSync->commSend(SYNC_NO_INFO);
         }
-
-    
-
-        stringstream msg;
-        msg << "StupidSync succeeded." << endl;
-        msg << "self - other = " << printListOfSharedPtrs(selfMinusOther)
-            << endl;
-        msg << "other - self = " << printListOfSharedPtrs(otherMinusSelf)
-            << endl;
-
-        Logger::gLog(Logger::METHOD, msg.str());
+        // mySyncStats.timerEnd(SyncStats::COMM_TIME);
 
         commSync->commClose();
 
         // Record Stats
-        mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());
-        mySyncStats.increment(SyncStats::RECV, commSync->getRecvBytes());
+        // mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());
+        // mySyncStats.increment(SyncStats::RECV, commSync->getRecvBytes());
 
         return true;
     } catch (SyncFailureException &s) {

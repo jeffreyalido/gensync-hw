@@ -18,6 +18,7 @@
 #include <GenSync/Syncs/CPISync_HalfRound.h>
 #include <GenSync/Syncs/IBLTSetOfSets.h>
 #include <GenSync/Syncs/CuckooSync.h>
+#include <GenSync/Syncs/StupidSync.h>
 
 const char BenchParams::KEYVAL_SEP = ':';
 const string BenchParams::FILEPATH_SEP = "/"; // TODO: we currently don't compile for _WIN32!
@@ -152,6 +153,8 @@ inline shared_ptr<Params> decideBenchParams(GenSync::SyncProtocol syncProtocol, 
         return par;
     } else if (syncProtocol == GenSync::SyncProtocol::FullSync) {
         return nullptr;
+    } else if (syncProtocol == GenSync::SyncProtocol::StupidSync) {
+        return nullptr;
     } else {
         stringstream ss;
         ss << "There is no viable sync protocol with ID " << static_cast<size_t>(syncProtocol);
@@ -273,6 +276,13 @@ BenchParams::BenchParams(SyncMethod& meth) :
     if (full) {
         syncProtocol = GenSync::SyncProtocol::FullSync;
         syncParams = make_shared<FullSyncParams>();
+        return;
+    }
+
+    auto stupid = dynamic_cast<StupidSync*>(&meth);
+    if (stupid) {
+        syncProtocol = GenSync::SyncProtocol::StupidSync;
+        syncParams = make_shared<StupidSyncParams>();
         return;
     }
 
