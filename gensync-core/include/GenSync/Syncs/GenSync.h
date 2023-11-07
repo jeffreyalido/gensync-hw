@@ -386,6 +386,7 @@ public:
 
     /** Constructor - makes all fields undefined. */
     Builder() :
+    nInARow(DFT_NINAROW),
     proto(DFT_PROTO),
     host(DFT_HOST),
     port(DFT_PRT),
@@ -400,12 +401,21 @@ public:
         myComm = nullptr;
         myMeth = nullptr;
     }
+    
 
     /**
      * Builds a GenSync object.
      * @return a GenSync object from the build parts that have been set.
      */
     GenSync build();
+
+    /**
+     * Sets the protocol to be used for synchronization.
+     */
+    Builder& set_nInARow(int theNInARow) {
+        this->nInARow = theNInARow;
+        return *this;
+    }
 
     /**
      * Sets the protocol to be used for synchronization.
@@ -548,6 +558,7 @@ public:
     }
 
 private:
+    int nInARow; /** the number of times in a row that the server must see an element before it is considered to be synchronized */
     SyncProtocol proto; /** the sync protocol to implement */
     SyncComm comm; /** communication means for the synchronization */
     string host; /** the host with which to connect for a socket-based sync */
@@ -586,6 +597,7 @@ private:
     static const string DFT_HOST;
     static const string DFT_IO;
     static const int DFT_ERROR;
+    static const int DFT_NINAROW = 2;
 };
 
 #endif

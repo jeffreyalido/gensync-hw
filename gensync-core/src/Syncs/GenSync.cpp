@@ -521,7 +521,7 @@ GenSync GenSync::Builder::build() {
             myMeth = make_shared<IBLTSync_Multiset>(numExpElem, bits);
             break;
         case SyncProtocol::StupidSync:
-            myMeth = make_shared<StupidSync>(numExpElem, bits);
+            myMeth = make_shared<StupidSync>(nInARow);
             break;
         default:
             throw invalid_argument("I don't know how to synchronize with this protocol.");
