@@ -47,11 +47,16 @@ bool StupidSync::SyncClient(const shared_ptr<Communicant> &commSync,
 
     
         auto iter = SyncMethod::beginElements(); // Initialize the iterator
+        int response; // flag to track when to quit, ie, n dataobjects in a row
 
         while (iter != SyncMethod::endElements()) { // Use a while loop
             commSync->commSend(1); // send one element at a time
             commSync->commSend(**iter);
-            ++iter; 
+            response = commSync->commRecv_byte();
+            if (response == SYNC_OK_FLAG) {
+                break;
+            }
+            ++iter;
         }
 
         stringstream msg;
@@ -104,11 +109,13 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
                     nCounter++;
                     if (nCounter == n) {
                         quitSync = true;
+                        commSync->commSend(SYNC_OK_FLAG);
                     }
                 }
                 else {
                     myData.insert(newDatum);
                 }
+                commSync->commSend(SYNC_NO_INFO);
             }
         }
 
