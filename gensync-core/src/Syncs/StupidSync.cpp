@@ -67,7 +67,6 @@ bool StupidSync::SyncClient(const shared_ptr<Communicant> &commSync,
         mySyncStats.timerEnd(SyncStats::COMM_TIME);
 
         commSync->commClose();
-        
 
         // Record Stats
         mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());
@@ -100,8 +99,7 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
         int nCounter = 0;
 
         while (true) {
-            const shared_ptr<DataObject> newDatum =
-                commSync->commRecv_DataObject();
+            shared_ptr<DataObject> newDatum = commSync->commRecv_DataObject();
             std::cout << "server newDatum: " << *newDatum << std::endl;
             if (myData.find(newDatum) != myData.end()) {
                 cout << "server myData: " << printElem() << endl;
@@ -113,16 +111,16 @@ bool StupidSync::SyncServer(const shared_ptr<Communicant> &commSync,
                     break;
                 }
             } else {
-                addElem(newDatum); // copy received data to your own set.
+                StupidSync::addElem(newDatum); // copy received data to your own set.
             }
             commSync->commSend(SYNC_NO_INFO);
         }
         mySyncStats.timerEnd(SyncStats::COMM_TIME);
 
         commSync->commClose();
-        for (const auto &element : myData) {
-            std::cout << "myData element: " << *element << std::endl;
-        }
+        // for (const auto &element : myData) {
+        //     std::cout << "myData element: " << *element << std::endl;
+        // }
 
         // Record Stats
         mySyncStats.increment(SyncStats::XMIT, commSync->getXmitBytes());

@@ -18,29 +18,6 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    // GenSync::SyncProtocol prot;
-    // string type = string(argv[2]);
-
-    // // no string switch statements :(
-    // if (type == "CPISync") {
-    //     prot = GenSync::SyncProtocol::CPISync;
-    // } else if (type == "InterCPISync") {
-    //     prot = GenSync::SyncProtocol::InteractiveCPISync;
-    // } else if (type == "OneWayCPISync") {
-    //     prot = GenSync::SyncProtocol::OneWayCPISync;
-    // } else if (type == "FullSync") {
-    //     prot = GenSync::SyncProtocol::FullSync;
-    // } else if (type == "IBLTSync") {
-    //     prot = GenSync::SyncProtocol::IBLTSync;
-    // } else if (type == "OneWayIBLTSync") {
-    //     prot = GenSync::SyncProtocol::OneWayIBLTSync;
-    // } else if (type == "StupidSync") {
-    //     prot = GenSync::SyncProtocol::StupidSync;
-    // } else {
-    //     cout << "invalid sync type!" << endl;
-    //     exit(1);
-    // }
-
     const int PORT = 8001;     // port on which to connect
     const int ERR = 8;         // inverse log of error chance
     const int M_BAR = 1;       // max differences between server and client
@@ -61,7 +38,7 @@ int main(int argc, char *argv[]) {
             //               : BITS * CHAR_BIT))
             .setNumPartitions(PARTS)
             .setExpNumElems(EXP_ELTS)
-            .set_nInARow(2)
+            .set_nInARow(3)
             .build();
 
     if (strcmp(argv[1], "client") == 0) {
@@ -84,7 +61,7 @@ int main(int argc, char *argv[]) {
         genSync.addElem(make_shared<DataObject>('4'));
         genSync.addElem(make_shared<DataObject>('6'));
         genSync.addElem(make_shared<DataObject>('8'));
-        genSync.addElem(make_shared<DataObject>("10"));
+        genSync.addElem(make_shared<DataObject>("5"));
         genSync.addElem(make_shared<DataObject>("12"));
 
         cout << "connecting on port " << PORT << "..." << endl;
