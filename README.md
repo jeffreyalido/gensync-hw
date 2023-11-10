@@ -12,3 +12,6 @@ The client sends 2 to the server.  The server does have 2.
 The client sends 4 to the server.  The server does have 4.
 
 The synchronization stops, because the server got two elements in a row ( i.e., 2, 4) that it already had.
+
+# Information
+Completed in November 2023 in EC500: Software at Scale taught by Ari Trachtenberg.
